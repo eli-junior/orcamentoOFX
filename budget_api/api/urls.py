@@ -1,5 +1,7 @@
 from ninja import NinjaAPI
-from django.http import JsonResponse
+
+# Routers are imported here
+from .routers.lancamentos_router import router as lancamentos_router
 
 # API instance for v1 business logic endpoints
 # The docs_url will make swagger available at /api/v1/docs/
@@ -8,14 +10,14 @@ api_v1 = NinjaAPI(
     version="1.0.0",
     description="Version 1 of the Personal Budget API. Documentation for v1 endpoints is available at /api/v1/docs/",
     docs_url="docs/",  # This will make docs available at the root of where api_v1 is mounted + /docs/
-    urls_namespace="api_v1"
+    urls_namespace="api_v1",
 )
 
-# Routers are imported here
-from .routers.lancamentos_router import router as lancamentos_router
 
 # Add routers to the api_v1 instance
-api_v1.add_router("/", lancamentos_router) # Mounts lancamentos_router endpoints at the root of /api/v1/
+api_v1.add_router(
+    "/", lancamentos_router
+)  # Mounts lancamentos_router endpoints at the root of /api/v1/
 
 # Later, we will add more routers from api.views or dedicated router files here.
 # For example:

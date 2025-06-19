@@ -1,15 +1,11 @@
-# This file tells Django which settings module to use.
-# By default, we point to development settings.
-# You could use an environment variable (e.g., DJANGO_ENV)
-# to switch between 'development' and 'production' dynamically.
-#
-# Example using an environment variable:
-# from decouple import config
-# DJANGO_ENV = config('DJANGO_ENV', default='development')
-#
-# if DJANGO_ENV == 'production':
-#     from .production import *
-# else:
-#     from .development import *
+from decouple import config
 
-from .development import *
+match ENVIROMENT := (config("ENVIROMENT", default="development")).lower():
+    case "production":
+        from .production import *  # noqa: F403
+    case "development":
+        from .development import *  # noqa: F403
+    case _:
+        raise ValueError(
+            f"Unknown environment: {ENVIROMENT}. Expected 'production' or 'development'."
+        )

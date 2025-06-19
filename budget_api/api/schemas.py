@@ -1,18 +1,26 @@
+from datetime import (date,  # Ensure datetime is imported for data_upload
+                      datetime)
+from typing import List, Optional
+
 from ninja import Schema
 from pydantic import Field
-from typing import Optional, List
-from datetime import date, datetime # Ensure datetime is imported for data_upload
+
 
 class MessageSchema(Schema):
     message: str
+
 
 class ErrorDetailSchema(Schema):
     loc: Optional[List[str]] = None
     msg: str
     type: str
 
-class ErrorResponseSchema(Schema): # Renamed for clarity from ErrorSchema to avoid confusion with Pydantic's own Error classes
+
+class ErrorResponseSchema(
+    Schema
+):  # Renamed for clarity from ErrorSchema to avoid confusion with Pydantic's own Error classes
     errors: List[ErrorDetailSchema]
+
 
 # --- Categoria Schemas ---
 class CategoriaSchema(Schema):
@@ -20,9 +28,11 @@ class CategoriaSchema(Schema):
     nome: str
     descricao: Optional[str] = None
 
+
 class CategoriaInSchema(Schema):
-    nome: str = Field(..., min_length=1, max_length=100) # Added min_length
+    nome: str = Field(..., min_length=1, max_length=100)  # Added min_length
     descricao: Optional[str] = None
+
 
 # --- SubCategoria Schemas ---
 class SubCategoriaSchema(Schema):
@@ -33,10 +43,12 @@ class SubCategoriaSchema(Schema):
     # Optional: Include nested CategoriaSchema for richer responses
     # categoria: Optional[CategoriaSchema] = None
 
+
 class SubCategoriaInSchema(Schema):
     categoria_id: int
-    nome: str = Field(..., min_length=1, max_length=100) # Added min_length
+    nome: str = Field(..., min_length=1, max_length=100)  # Added min_length
     descricao: Optional[str] = None
+
 
 # --- Origem Schemas ---
 class OrigemSchema(Schema):
@@ -44,27 +56,34 @@ class OrigemSchema(Schema):
     nome: str
     descricao: Optional[str] = None
 
+
 class OrigemInSchema(Schema):
-    nome: str = Field(..., min_length=1, max_length=100) # Added min_length
+    nome: str = Field(..., min_length=1, max_length=100)  # Added min_length
     descricao: Optional[str] = None
+
 
 # --- Lancamento Schemas ---
 class LancamentoBaseSchema(Schema):
     data_transacao: date
-    valor: float # Using float for schema, DecimalField in model. Pydantic v2 handles Decimal better, but float is common.
-    descricao_original: str = Field(..., min_length=1, max_length=255) # Added min_length
-    tipo_transacao: str # DEBIT, CREDIT, OTHER - Consider Enum here for stricter validation
+    valor: float  # Using float for schema, DecimalField in model. Pydantic v2 handles Decimal better, but float is common.
+    descricao_original: str = Field(
+        ..., min_length=1, max_length=255
+    )  # Added min_length
+    tipo_transacao: (
+        str  # DEBIT, CREDIT, OTHER - Consider Enum here for stricter validation
+    )
+
 
 class LancamentoSchema(LancamentoBaseSchema):
     id: int
-    data_upload: datetime # Changed to datetime to match auto_now_add=True
+    data_upload: datetime  # Changed to datetime to match auto_now_add=True
     status_conciliacao: str
-    referencia_mes: Optional[str] = Field(None, pattern=r"^\d{4}-\d{2}$") # YYYY-MM
+    referencia_mes: Optional[str] = Field(None, pattern=r"^\d{4}-\d{2}$")  # YYYY-MM
     descricao_editada: Optional[str] = Field(None, max_length=255)
     categoria_id: Optional[int] = None
     sub_categoria_id: Optional[int] = None
     origem_id: Optional[int] = None
-    hash_transacao: Optional[str] = None # Should be read-only from client perspective
+    hash_transacao: Optional[str] = None  # Should be read-only from client perspective
 
     # Optional: Include nested schemas for richer responses if needed later
     # categoria: Optional[CategoriaSchema] = None
@@ -74,7 +93,11 @@ class LancamentoSchema(LancamentoBaseSchema):
     # This method might be better suited for the model or a helper utility,
     # but can be kept if data is transformed for presentation in the schema.
     def get_descricao_display(self) -> str:
-        return self.descricao_editada if self.descricao_editada else self.descricao_original
+        return (
+            self.descricao_editada
+            if self.descricao_editada
+            else self.descricao_original
+        )
 
 
 class LancamentoCreateSchema(LancamentoBaseSchema):
@@ -86,38 +109,49 @@ class LancamentoCreateSchema(LancamentoBaseSchema):
     categoria_id: Optional[int] = None
     sub_categoria_id: Optional[int] = None
     origem_id: Optional[int] = None
-    referencia_mes: Optional[str] = Field(None, pattern=r"^\d{4}-\d{2}$") # YYYY-MM
+    referencia_mes: Optional[str] = Field(None, pattern=r"^\d{4}-\d{2}$")  # YYYY-MM
 
 
 class LancamentoUpdateSchema(Schema):
     # Fields that can be updated during reconciliation or full edit
     # Making all fields optional for partial updates (PATCH)
-    data_transacao: Optional[date] = None # Allow updating transaction date
-    valor: Optional[float] = None # Be cautious allowing value edits, but can be needed
-    descricao_original: Optional[str] = Field(None, min_length=1, max_length=255) # Allow editing original description
-    tipo_transacao: Optional[str] = None # Allow changing type
+    data_transacao: Optional[date] = None  # Allow updating transaction date
+    valor: Optional[float] = None  # Be cautious allowing value edits, but can be needed
+    descricao_original: Optional[str] = Field(
+        None, min_length=1, max_length=255
+    )  # Allow editing original description
+    tipo_transacao: Optional[str] = None  # Allow changing type
 
-    referencia_mes: Optional[str] = Field(None, pattern=r"^\d{4}-\d{2}$") # YYYY-MM
+    referencia_mes: Optional[str] = Field(None, pattern=r"^\d{4}-\d{2}$")  # YYYY-MM
     descricao_editada: Optional[str] = Field(None, max_length=255)
     categoria_id: Optional[int] = None
     sub_categoria_id: Optional[int] = None
     origem_id: Optional[int] = None
-    status_conciliacao: Optional[str] = None # e.g., manually overriding to 'ignorado' or 'conciliado'
+    status_conciliacao: Optional[str] = (
+        None  # e.g., manually overriding to 'ignorado' or 'conciliado'
+    )
+
 
 class LancamentoConciliacaoSchema(Schema):
     # Specific schema for the reconciliation process, focusing on editable fields during this step.
     referencia_mes: Optional[str] = Field(None, max_length=7, pattern=r"^\d{4}-\d{2}$")
     descricao_editada: Optional[str] = Field(None, max_length=255)
-    categoria_id: int # Assuming category is required for reconciliation
+    categoria_id: int  # Assuming category is required for reconciliation
     sub_categoria_id: Optional[int] = None
-    origem_id: Optional[int] = None # Assuming origem might be set during reconciliation
-    status_conciliacao: str = Field(default='conciliado') # Default to 'conciliado' when this schema is used
+    origem_id: Optional[int] = (
+        None  # Assuming origem might be set during reconciliation
+    )
+    status_conciliacao: str = Field(
+        default="conciliado"
+    )  # Default to 'conciliado' when this schema is used
+
 
 class PaginatedResponseSchema(Schema):
     count: int
     next: Optional[str] = None
     previous: Optional[str] = None
     # 'results' will be added dynamically, e.g., results: List[LancamentoSchema]
+
 
 # Example of how to use PaginatedResponseSchema dynamically:
 # class PaginatedLancamentoSchema(PaginatedResponseSchema):
