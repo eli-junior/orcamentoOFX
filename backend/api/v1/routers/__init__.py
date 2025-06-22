@@ -1,1 +1,3 @@
-# This file intentionally left blank to signify the 'routers' directory is a Python package.
+from ninja import Router
+
+router = Router(tags=["API V1 Endpoints"])
