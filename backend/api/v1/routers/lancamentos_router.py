@@ -3,8 +3,8 @@ from typing import Any, Dict, List
 from django.db import IntegrityError, transaction
 from ninja import Router
 
-from budget_api.api.models import Lancamento
-from budget_api.api.schemas import LancamentoCreateSchema, MessageSchema
+from backend.api.models import Lancamento
+from backend.api.schemas import LancamentoCreateSchema, MessageSchema
 
 router = Router(tags=["Lançamentos"])
 

@@ -13,7 +13,7 @@ from django.urls import include, path  # include is used for debug_toolbar
 from ninja import NinjaAPI
 
 # Import the v1 API instance from api/urls.py
-from budget_api.api.urls import api_v1
+from backend.api.urls import api
 
 # Public API instance (health checks, etc.)
 public_api = NinjaAPI(
@@ -68,7 +68,7 @@ urlpatterns = [
         "public/", public_api.urls
     ),  # Mounts /public/health, /public/ready, and /public/docs/
     path(
-        "api/v1/", api_v1.urls
+        "api/", api.urls
     ),  # Mounts all v1 endpoints (like /api/v1/sample) and v1 docs at /api/v1/docs/
 ]
 

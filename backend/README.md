@@ -13,7 +13,7 @@ This project is a RESTful API for managing personal finances, built with Django 
 ## Project Structure
 
 ```
-budget_api/
+backend/
 ├── api/                      # Main Django app for the API
 │   ├── migrations/
 │   ├── models/
@@ -52,7 +52,7 @@ budget_api/
 1.  **Clone the repository:**
     ```bash
     git clone <your-repo-url>
-    cd budget_api
+    cd backend
     ```
 
 2.  **Create and activate a virtual environment:**

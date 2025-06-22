@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "ninja",
-    "budget_api.api",
+    "backend.api",
 ]
 
 MIDDLEWARE = [
@@ -58,7 +58,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "budget_api.config.urls"
+ROOT_URLCONF = "backend.config.urls"
 
 TEMPLATES = [
     {
@@ -75,13 +75,13 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "budget_api.config.wsgi.application"
+WSGI_APPLICATION = "backend.config.wsgi.application"
 
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-default_dburl = f"sqlite:///{Path.joinpath(BASE_DIR, 'db.sqlite3').resolve()}"
+default_dburl = f"sqlite:///{Path.joinpath(BASE_DIR, '../db.sqlite3').resolve()}"
 DATABASES = {"default": config("DATABASE_URL", default=default_dburl, cast=dburl)}
 
 
