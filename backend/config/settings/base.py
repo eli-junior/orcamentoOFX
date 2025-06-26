@@ -78,16 +78,6 @@ TEMPLATES = [
 WSGI_APPLICATION = "backend.config.wsgi.application"
 
 
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
-default_dburl = f"sqlite:///{Path.joinpath(BASE_DIR, '../db.sqlite3').resolve()}"
-DATABASES = {"default": config("DATABASE_URL", default=default_dburl, cast=dburl)}
-
-
-# Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",

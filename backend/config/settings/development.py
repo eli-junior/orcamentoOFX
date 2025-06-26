@@ -6,5 +6,10 @@ INSTALLED_APPS += [  # noqa: F405
     "debug_toolbar",
 ]
 
+
+default_dburl = f"sqlite:///{Path.joinpath(BASE_DIR, '../db.sqlite3').resolve()}"
+DATABASES = {"default": config("DATABASE_URL", default=default_dburl, cast=dburl)}
+
+
 # For Django Debug Toolbar
 INTERNAL_IPS = ["127.0.0.1"]
