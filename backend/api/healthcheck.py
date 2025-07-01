@@ -8,17 +8,15 @@ from django.db import connection
 router = Router(tags=["Health Check"])
 
 
-@router.get("health")
+@router.get("/status")
 def health(request):
     return "UP!"
 
 
-@router.get("ready")
+@router.get("/ready")
 def ready(request):
     status_code = 200
-    response = {
-        "database": None
-    }
+    response = {"database": None}
     try:
         with connection.cursor() as cursor:
             cursor.execute("select 1")
@@ -30,4 +28,3 @@ def ready(request):
     if status_code == 200:
         return Response(response)
     raise HttpError(status_code, str(response))
-    

@@ -1,4 +1,9 @@
+from dj_database_url import parse as dburl
+from decouple import config
+from pathlib import Path
+
 from .base import *  # noqa: F403
+
 
 INSTALLED_APPS += [  # noqa: F405
     # Development tools
@@ -6,8 +11,9 @@ INSTALLED_APPS += [  # noqa: F405
     "debug_toolbar",
 ]
 
+DIR = BASE_DIR  # noqa: F405
 
-default_dburl = f"sqlite:///{Path.joinpath(BASE_DIR, '../db.sqlite3').resolve()}"
+default_dburl = f"sqlite:///{Path.joinpath(DIR, '../db.sqlite3').resolve()}"
 DATABASES = {"default": config("DATABASE_URL", default=default_dburl, cast=dburl)}
 
 
